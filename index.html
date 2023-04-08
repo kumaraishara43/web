@@ -2,18 +2,25 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Speed Test Meter</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/speedtest/1.0.0/speedtest.min.js"></script>
+  <title>Iframe Usage Tracker</title>
 </head>
 <body>
-  <h1>Speed Test Meter</h1>
-  <div id="speed-test-results"></div>
+  <h1>Iframe Usage Tracker</h1>
+  <p id="usage-display">Total data transferred: 0 bytes</p>
+  <iframe src="http://stream.zeno.fm/nfsmv73x0nhvv" onload="trackIframeUsage()"></iframe>
   <script>
-    var test = new Speedtest();
-    test.onupdate = function(data) {
-      document.getElementById('speed-test-results').innerHTML = 'Download speed: ' + data.download + ' Mbps<br>Upload speed: ' + data.upload + ' Mbps';
-    };
-    test.start();
+    var totalBytes = 0;
+    function trackIframeUsage() {
+      var iframe = document.getElementsByTagName('iframe')[0];
+      var iframeDoc = iframe.contentWindow.document;
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'https://example.com/data');
+      xhr.onload = function() {
+        totalBytes += xhr.responseText.length;
+        document.getElementById('usage-display').innerHTML = 'Total data transferred: ' + totalBytes + ' bytes';
+      };
+      iframeDoc.body.appendChild(xhr);
+    }
   </script>
 </body>
 </html>
